@@ -1,0 +1,35 @@
+name: Collect garage data
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (GitHub may run some a few minutes late)
+  workflow_dispatch:          # adds a "Run workflow" button for testing
+
+permissions:
+  contents: write             # lets the workflow save the CSV back to the repo
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read the SJSU garage page
+        run: python collector.py
+
+      - name: Save new rows to the repo
+        run: |
+          git config user.name "spartan-park-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/garage_fullness.csv
+          git commit -m "Garage data $(date -u +%Y-%m-%dT%H:%MZ)" || exit 0
+          git pull --rebase
+          git push
