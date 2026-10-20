@@ -10,7 +10,9 @@ GitHub Actions runs it every 10 minutes (see .github/workflows/collect.yml).
 import csv
 import os
 import re
+import ssl
 import sys
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
@@ -23,8 +25,19 @@ def fetch_page(url=URL):
     request = urllib.request.Request(
         url, headers={"User-Agent": "spartan-park student project (data collector)"}
     )
-    with urllib.request.urlopen(request, timeout=30) as response:
-        return response.read().decode("utf-8", errors="replace")
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return response.read().decode("utf-8", errors="replace")
+    except urllib.error.URLError as error:
+        # SJSU's server sends an incomplete certificate chain. Browsers fill in the
+        # missing piece; Python does not. This page is public and read-only and we
+        # send nothing private, so we retry without the certificate check.
+        if "CERTIFICATE_VERIFY_FAILED" not in str(error):
+            raise
+        print("Note: SJSU certificate incomplete; retrying without verification.")
+        context = ssl._create_unverified_context()
+        with urllib.request.urlopen(request, timeout=30, context=context) as response:
+            return response.read().decode("utf-8", errors="replace")
 
 
 def parse(html):
