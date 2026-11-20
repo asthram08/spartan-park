@@ -551,3 +551,7 @@ collected_at_utc,page_updated,garage,fullness_pct,raw_text
 2026-11-20T12:33:10Z,"11/20/2026, 4:30:23 AM",West Garage,0,0 %
 2026-11-20T12:33:10Z,"11/20/2026, 4:30:23 AM",South Garage,1,1 %
 2026-11-20T12:33:10Z,"11/20/2026, 4:30:23 AM",South Campus Garage,0,0 %
+2026-11-20T20:40:53Z,"11/20/2026, 12:38:26 PM",North Garage,36,36 %
+2026-11-20T20:40:53Z,"11/20/2026, 12:38:26 PM",West Garage,37,37 %
+2026-11-20T20:40:53Z,"11/20/2026, 12:38:26 PM",South Garage,41,41 %
+2026-11-20T20:40:53Z,"11/20/2026, 12:38:26 PM",South Campus Garage,1,1 %
